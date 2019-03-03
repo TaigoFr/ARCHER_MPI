@@ -5,6 +5,7 @@
 // maximum tag is 32767
 // Wtime
 // MPI_Probe
+// MPI_Barrier
 
 #pragma once
 

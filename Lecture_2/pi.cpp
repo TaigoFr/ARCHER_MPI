@@ -22,16 +22,20 @@ int main(){
 	int size = -1;
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	//SERIAL
 	double time = MPI_Wtime();
-	double sum  = sum_PI(1,N,N);
-	
 	unsigned repeat = 100000;
-	for(unsigned i=0; i<repeat-1; ++i)
-		sum_PI(1,N,N);
+	double sum, serial;
+	if(rank==0){
+		//SERIAL
+		sum = sum_PI(1,N,N);
+	
+		for(unsigned i=0; i<repeat-1; ++i)
+			sum_PI(1,N,N);
 
-	double serial = MPI_Wtime() - time;
-	printf("[SERIAL] PI = %.10lf at rank %d, taking %lf time\n",sum,rank,serial);
+		serial = MPI_Wtime() - time;
+		printf("[SERIAL]\tPI = %.10lf at rank %d, taking %lf time\n",sum,rank,serial);
+	}
+	MPI_Barrier(MPI_COMM_WORLD);
 
 	//PARALLEL
 	time = MPI_Wtime();
@@ -50,7 +54,7 @@ int main(){
 			sum += temp;
 		}
 		double parallel = MPI_Wtime() - time;
-		printf("[PARALLEL] PI = %.10lf at rank %d, taking %lf time (speedup = %lf)\n",sum,rank,parallel,serial/parallel);
+		printf("[PARALLEL %d]\tPI = %.10lf at rank %d, taking %lf time (speedup = %lf)\n",size,sum,rank,parallel,serial/parallel);
 	}
 
 	MPI_Finalize();
