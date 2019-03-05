@@ -23,7 +23,7 @@ int main(){
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
 	double time = MPI_Wtime();
-	unsigned repeat = 10000;
+	unsigned repeat = 200000;
 	double sum, serial;
 	if(rank==0){
 		//SERIAL
