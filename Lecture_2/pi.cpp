@@ -11,8 +11,6 @@ double sum_PI(unsigned from, unsigned to, unsigned N){
 	return sum/N*4.;
 }
 
-void force(double pi){return;}
-
 int main(){
 	MPI_Init(NULL, NULL);
 
@@ -32,7 +30,9 @@ int main(){
 		sum = sum_PI(1,N,N);
 	
 		for(unsigned i=0; i<repeat-1; ++i)
-			force(sum_PI(1,N,N));
+			sum += sum_PI(1,N,N);
+
+		sum /= repeat;
 
 		serial = MPI_Wtime() - time;
 		printf("[SERIAL]\tPI = %.20lf at rank %d, taking %lf time\n",sum,rank,serial);
@@ -44,7 +44,8 @@ int main(){
 
 	sum = sum_PI((rank*N)/size + 1,((rank+1)*N)/size,N);
 	for(unsigned i=0; i<repeat-1; ++i)
-		force(sum_PI((rank*N)/size + 1,((rank+1)*N)/size,N));
+		sum += sum_PI((rank*N)/size + 1,((rank+1)*N)/size,N);
+	sum /= repeat;
 
 	if(rank!=0)
 		MPI_Ssend(&sum,1,MPI_DOUBLE,0,rank,MPI_COMM_WORLD);
