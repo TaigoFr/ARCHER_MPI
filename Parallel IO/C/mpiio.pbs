@@ -2,7 +2,7 @@
 
 # PBS job options (name, compute nodes, job time)
 #PBS -l select=2
-#PBS -l walltime=00:01:00
+#PBS -l walltime=00:05:00
 #PBS -A y14
 #PBS -j oe
 
@@ -12,4 +12,4 @@
 cd $PBS_O_WORKDIR
 
 # Launch the parallel job using 1 process
-time aprun -n 9 ./mpiio 100 0
+time aprun -n 9 ./mpiio 1000 0
