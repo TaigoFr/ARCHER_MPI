@@ -10,4 +10,4 @@
 cd $PBS_O_WORKDIR
 
 # Launch the parallel job using 1 process
-aprun -n 1 ./mpiio
+aprun -n 9 ./mpiio

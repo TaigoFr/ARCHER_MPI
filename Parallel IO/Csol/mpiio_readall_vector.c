@@ -19,8 +19,8 @@
 
 #define NDIM 2
 
-#define XPROCS 2
-#define YPROCS 2
+#define XPROCS 3
+#define YPROCS 3
 
 #define NPROCS (XPROCS*YPROCS)
 
