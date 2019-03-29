@@ -43,7 +43,7 @@ void ioread(char *filename, void *ptr, int ndouble)
   
   double *data = (double *) ptr;
 
-  printf("ioread: reading <%s> ...\n", filename);
+  // printf("ioread: reading <%s> ...\n", filename);
 
   if ( (fp = fopen(filename, "r")) == NULL)
   {
@@ -59,7 +59,7 @@ void ioread(char *filename, void *ptr, int ndouble)
 
   fclose(fp);
 
-  printf("... done\n");
+  // printf("... done\n");
 }
 
 void iowrite(char *filename, void *ptr, int ndouble)
@@ -70,7 +70,7 @@ void iowrite(char *filename, void *ptr, int ndouble)
   
   double *data = (double *) ptr;
 
-  printf("iowrite: writing <%s> ...\n", filename);
+  // printf("iowrite: writing <%s> ...\n", filename);
 
   if ( (fp = fopen(filename, "w")) == NULL)
   {
@@ -85,7 +85,7 @@ void iowrite(char *filename, void *ptr, int ndouble)
   }
 
   fclose(fp);
-  printf("... done\n");
+  // printf("... done\n");
 }
 
 #define INITDATAVAL 0.5

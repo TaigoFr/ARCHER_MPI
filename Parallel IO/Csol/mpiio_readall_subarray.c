@@ -37,7 +37,7 @@
 
 #define MAXFILENAME 64
 
-void func()
+void func(unsigned verbose)
 {
   /*
    *  pcoords stores the grid positions of each process
@@ -97,7 +97,7 @@ void func()
 
   initpgrid(pcoords, XPROCS, YPROCS);
 
-  if (rank == 0)
+  if (rank == 0 && verbose)
     {
       printf("Running on %d process(es) in a %d x %d grid\n",
 	     NPROCS, XPROCS, YPROCS);
@@ -193,15 +193,17 @@ void func()
   iowrite(filename, x, NXP*NYP);
 }
 
-int main()
+int main(int argc, char** argv)
 {
 
+  unsigned N = (argc>1 ? atoi(argv[1]) : 1);
+  unsigned verbose = (argc>2 ? atoi(argv[2]) : 1);
 
   MPI_Init(NULL, NULL);
 
-  unsigned N = 1;
+  printf("Doing %u iterations\n",N);
   for(unsigned i=0; i<N; ++i)
-  	func();
+  	func(verbose);
 
   MPI_Finalize();
 

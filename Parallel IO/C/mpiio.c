@@ -37,7 +37,7 @@
 
 #define MAXFILENAME 64
 
-void func()
+void func(unsigned verbose)
 {
   /*
    *  pcoords stores the grid positions of each process
@@ -56,12 +56,20 @@ void func()
   int rank, size;
   int i, j;
 
-  int istart, jstart;
-
   char filename[MAXFILENAME];
 
-  MPI_Comm comm = MPI_COMM_WORLD;
+  /*
+   *  Variables needed for MPI-IO
+   */
 
+  int count, blocklength, stride, istart, jstart, doublesize;
+  MPI_Datatype my_mpi_vector;
+
+  MPI_File fh;
+  MPI_Offset disp;
+  MPI_Status status;
+
+  MPI_Comm comm = MPI_COMM_WORLD;
 
   MPI_Comm_size(comm, &size);
   MPI_Comm_rank(comm, &rank);
@@ -89,7 +97,7 @@ void func()
 
   initpgrid(pcoords, XPROCS, YPROCS);
 
-  if (rank == 0)
+  if (rank == 0 && verbose)
     {
       printf("Running on %d process(es) in a %d x %d grid\n",
 	     NPROCS, XPROCS, YPROCS);
@@ -112,39 +120,77 @@ void func()
 
 
   /*
-   *  Read the entire array on the master process
-   *  Passing "-1" as the rank argument means that the file name has no
-   *  trailing "_rank" appended to it, ie we read the global file
+   *  Define the NXP x NYP vector for this distribution
+   *  Note that it is the same for every process. To ensure that each
+   *  process reads different data from the file, they use different disps
    */
 
-  if (rank == 0)
+  count = NXP;
+  blocklength = NYP;
+  stride = NY;
+
+  MPI_Type_vector(count, blocklength, stride, MPI_DOUBLE, &my_mpi_vector);
+
+  /*  Commit it before use */
+
+  MPI_Type_commit(&my_mpi_vector);
+
+  /*
+   *  Construct name of input file: -1 means no rank info is appended
+   */
+
+  createfilename(filename, "cinput", NX, NY, -1);
+
+
+  /*
+   *  Open the file for reading only and attach to file handle fh
+   *  No IO hints are passed since MPI_INFO_NULL is specified
+   */
+
+  if (MPI_File_open(comm, filename, MPI_MODE_RDONLY,
+		    MPI_INFO_NULL, &fh) != MPI_SUCCESS)
     {
-      createfilename(filename, "cinput", NX, NY, -1);
-      ioread (filename, buf, NX*NY);
-      printf("\n");
+      printf("Open error on rank %d\n", rank);
     }
 
   /*
-   *  Broadcast the data
-   */
-
-  MPI_Bcast(buf, NX*NY, MPI_DOUBLE, 0, comm);
-
-  /*
-   *  Copy down the correct data from buf to x. Need to work out, using the
-   *  position in the process grid, what the index of the bottom-left-hand
-   *  pixel for this process.
+   *  Set view for this process using the vector type with an appropriate
+   *  value if disp (computed in BYTES!)
    */
 
   istart = pcoords[rank][0]*NXP;
   jstart = pcoords[rank][1]*NYP;
 
-  for (i=0; i < NXP; i++)
+  MPI_Type_size(MPI_DOUBLE, &doublesize);
+
+  disp = (istart*NY + jstart)*doublesize;
+
+  /*
+   *  Set view for this process using appropriate datatype
+   */
+
+  if (MPI_File_set_view(fh, disp, MPI_DOUBLE, my_mpi_vector, "native",
+			MPI_INFO_NULL) != MPI_SUCCESS)
     {
-      for (j=0; j < NYP; j++)
-	{
-	  x[i][j] = buf[istart+i][jstart+j];
-	}
+      printf("View error on rank %d\n", rank);
+    }
+
+  /*
+   *  Read all the data for this process (ie NXP*NYP doubles)
+   */
+
+  if (MPI_File_read_all(fh, x, NXP*NYP, MPI_DOUBLE, &status) != MPI_SUCCESS)
+    {
+      printf("Read error on rank %d\n", rank);
+    }
+
+  /*
+   *  Close file
+   */
+
+  if (MPI_File_close(&fh) != MPI_SUCCESS)
+    {
+      printf("Close error on rank %d\n", rank);
     }
 
   /*
@@ -157,15 +203,17 @@ void func()
 
 }
 
-int main()
+int main(int argc, char** argv)
 {
 
+  unsigned N = (argc>1 ? atoi(argv[1]) : 1);
+  unsigned verbose = (argc>2 ? atoi(argv[2]) : 1);
 
   MPI_Init(NULL, NULL);
 
-  unsigned N = 1;
+  printf("Doing %u iterations\n",N);
   for(unsigned i=0; i<N; ++i)
-  	func();
+  	func(verbose);
 
   MPI_Finalize();
 

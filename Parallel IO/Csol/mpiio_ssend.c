@@ -37,7 +37,7 @@
 
 #define MAXFILENAME 64
 
-void func()
+void func(unsigned verbose)
 {
   /*
    *  pcoords stores the grid positions of each process
@@ -90,7 +90,7 @@ void func()
 
   initpgrid(pcoords, XPROCS, YPROCS);
 
-  if (rank == 0)
+  if (rank == 0 && verbose)
     {
       printf("Running on %d process(es) in a %d x %d grid\n",
 	     NPROCS, XPROCS, YPROCS);
@@ -122,7 +122,7 @@ void func()
     {
       createfilename(filename, "cinput", NX, NY, -1);
       ioread (filename, buf, NX*NY);
-      printf("\n");
+      if(verbose) printf("\n");
     }
 
   tag = 0;
@@ -160,7 +160,7 @@ void func()
 
 	  if (dest != 0)
 	    {
-	      printf("rank %d sending to rank %d\n", rank, dest);
+	      if(verbose) printf("rank %d sending to rank %d\n", rank, dest);
 	      MPI_Ssend(x, NXP*NYP, MPI_DOUBLE, dest, tag, comm);
 	    }
 	}
@@ -171,7 +171,7 @@ void func()
        *  Workers receive data from master
        */
 
-      printf("rank %d receiving from rank 0\n", rank);
+      if(verbose) printf("rank %d receiving from rank 0\n", rank);
       MPI_Recv(x, NXP*NYP, MPI_DOUBLE, 0, tag, comm, &status);
     }
 
@@ -186,15 +186,17 @@ void func()
 }
 
 
-int main()
+int main(int argc, char** argv)
 {
 
+  unsigned N = (argc>1 ? atoi(argv[1]) : 1);
+  unsigned verbose = (argc>2 ? atoi(argv[2]) : 1);
 
   MPI_Init(NULL, NULL);
 
-  unsigned N = 1;
+  printf("Doing %u iterations\n",N);
   for(unsigned i=0; i<N; ++i)
-  	func();
+  	func(verbose);
 
   MPI_Finalize();
 
