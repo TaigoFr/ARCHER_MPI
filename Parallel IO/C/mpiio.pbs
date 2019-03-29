@@ -1,13 +1,15 @@
 #!/bin/bash --login
 
 # PBS job options (name, compute nodes, job time)
-#PBS -l select=1
+#PBS -l select=2
 #PBS -l walltime=00:01:00
 #PBS -A y14
+#PBS -j oe
+
 
 # Change to the directory that the job was submitted from
 # (remember this should be on the /work filesystem)
 cd $PBS_O_WORKDIR
 
 # Launch the parallel job using 1 process
-aprun -n 9 ./mpiio
+time aprun -n 9 ./mpiio 100 0
