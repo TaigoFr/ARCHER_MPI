@@ -1,0 +1,23 @@
+#!/bin/bash
+
+DAT2PGM=./cdat2pgm
+XV=display
+XVOPTS='-'
+
+if [ $# -eq 0 ]
+then
+
+  echo "usage: `basename $0` <filenames>"
+
+else
+
+  for f in $*
+  do
+
+    echo "Viewing file <$f>; type \"q\" in the" $XV "window to close"
+    $DAT2PGM $f | $XV $XVOPTS &
+    sleep 1
+
+  done
+
+fi

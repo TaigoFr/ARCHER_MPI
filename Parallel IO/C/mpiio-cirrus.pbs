@@ -1,0 +1,24 @@
+#!/bin/bash --login
+
+# PBS job options (name, compute nodes, job time)
+
+#PBS -A d167
+#PBS -j oe
+#PBS -l walltime=00:01:00
+#PBS -l place=excl
+#PBS -l select=1:ncpus=36
+
+# Change to the directory that the job was submitted from
+# (remember this should be on the /work filesystem)
+cd $PBS_O_WORKDIR
+
+# Load SGI and Intel modules
+
+module load mpt
+module load intel-compilers-17
+
+# Launch the parallel job using 1 process
+# For up to 36 processes, set -n and -ppn to the same value
+# e.g. for 16 processes use: -n 16 -ppn 16
+
+mpiexec_mpt -n 1 -ppn 1 ./mpiio
