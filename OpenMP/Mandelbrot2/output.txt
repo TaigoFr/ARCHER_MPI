@@ -1,0 +1,11 @@
+Process 7/8
+Process 1/8
+Process 5/8
+Process 0/8
+Process 2/8
+Process 3/8
+Process 6/8
+Process 4/8
+Area of Mandlebrot set =   1.50928453 +/-   0.00075464
+7.02
+8	8	8	8	8	8	8	8	5.94

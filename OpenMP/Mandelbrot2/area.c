@@ -24,12 +24,13 @@ int main(){
  *     Inner loop has the iteration z=z*z+c, and threshold test
  */
 
+
 #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
-	int imin = omp_get_thread_num()*NPOINTS/omp_get_num_threads();
-	int imax = (omp_get_thread_num()+1)*NPOINTS/omp_get_num_threads();
-	// printf("From %d to %d in process %d/%d\n",imin,imax,omp_get_thread_num(),omp_get_num_threads());
-	for (int i=imin; i<imax; i++){
+	printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
+	// printf("%d\t",omp_get_num_threads());
+	#pragma omp for
+	for (int i=0; i<NPOINTS; i++){
 		for (int j=0; j<NPOINTS; j++){
 			c.real = -2.0+2.5*(double)(i)/(double)(NPOINTS)+1.0e-7;
 			c.imag = 1.125*(double)(j)/(double)(NPOINTS)+1.0e-7;
