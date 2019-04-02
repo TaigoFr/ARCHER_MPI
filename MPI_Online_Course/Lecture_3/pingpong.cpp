@@ -6,6 +6,9 @@
 #include <cmath>
 #include <iomanip> //setprecision
 
+//file to test latency and bandwidth of communication
+//to be tested using 2 CPUs and MPI
+
 #define MPI_type MPI_CHAR
 #define _type char
 
@@ -36,7 +39,7 @@ double pingpong(const unsigned repeat, const unsigned length){
 	MPI_Barrier(MPI_COMM_WORLD);
 	time = MPI_Wtime() - time;
 
-	if(rank==0) printf("Size (B) =\t%u\t; time = %lf\t%e\n", length*type_size, time, time/repeat);
+	if(rank==0) printf("Size (B) =\t%u\t; time = %lf\t%e\n", length*type_size, time, time/(2.*repeat));
 
 	free(str);
 	return time;
@@ -63,16 +66,15 @@ int main(){
 	double ratio = 1;
 	for(unsigned l=length, r=repeat; l!=0; l/=1.3, r*=ratio){
 		double t = pingpong(r,l);
-		double time_per_msg = t/l;
 		double bandwidth = l * r * type_size / t * 2./1024./1024.; //each pingpong is 2 messages (1MB is 1024x1024B)
-		if(rank==0) file << l << "\t\t" << (l<1000 ? "\t" : "") << r << "\t\t" << std::fixed << std::setprecision(3) << t << "\t\t\t" << std::scientific << t/r << "\t\t" << std::fixed << bandwidth << std::endl;
+		if(rank==0) file << l << "\t\t" << (l<1000 ? "\t" : "") << r << "\t\t" << std::fixed << std::setprecision(3) << t << "\t\t\t" << std::scientific << t/(2.*r) << "\t\t" << std::fixed << bandwidth << std::endl;
 		// if(r!=repeat) ratio *= target_time / t;
 		// r *= target_time / t;
 		// if(rank==0) printf("ratio = %lf\n",ratio);
 	}
 
 	double t = pingpong(repeat,0);
-	if(rank==0) file << "FINAL " << 0 << "\t\t" << repeat << "\t\t" << std::fixed << std::setprecision(3) << t << "\t\t\t" << std::scientific << t/repeat << "\t\t" << 0 << std::endl;
+	if(rank==0) file << "FINAL " << 0 << "\t\t" << repeat << "\t\t" << std::fixed << std::setprecision(3) << t << "\t\t\t" << std::scientific << t/(2.*repeat) << "\t\t" << 0 << std::endl;
 
 	file.close();
 
