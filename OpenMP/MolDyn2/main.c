@@ -126,7 +126,7 @@ int main(){
      *  and potential energy.
      */
       #pragma omp parallel default(none) \
-      shared(npart,x,f,side)
+      shared(npart,x,f,side,rcoff)
       {
         forces(npart, x, f, side, rcoff);
       }
