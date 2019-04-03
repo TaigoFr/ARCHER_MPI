@@ -3,7 +3,7 @@
 #
 # C compiler and options for Cray
 #
-CC=	mpicxx
+CC=	g++
 LIB=
 
 #
