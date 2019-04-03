@@ -28,7 +28,7 @@ int main(){
 {
 	int imin = omp_get_thread_num()*NPOINTS/omp_get_num_threads();
 	int imax = (omp_get_thread_num()+1)*NPOINTS/omp_get_num_threads();
-	// printf("From %d to %d in process %d/%d\n",imin,imax,omp_get_thread_num(),omp_get_num_threads());
+	printf("From %d to %d in process %d/%d\n",imin,imax,omp_get_thread_num(),omp_get_num_threads());
 	for (int i=imin; i<imax; i++){
 		for (int j=0; j<NPOINTS; j++){
 			c.real = -2.0+2.5*(double)(i)/(double)(NPOINTS)+1.0e-7;

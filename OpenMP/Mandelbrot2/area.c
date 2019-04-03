@@ -27,8 +27,9 @@ int main(){
 
 #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
-	printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
-	// printf("%d\t",omp_get_num_threads());
+	// printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
+	#pragma omp master
+	printf("%d\t",omp_get_num_threads());
 	#pragma omp for
 	for (int i=0; i<NPOINTS; i++){
 		for (int j=0; j<NPOINTS; j++){
@@ -56,6 +57,6 @@ int main(){
 	area  = 2.0*2.5*1.125*(double)(NPOINTS*NPOINTS-numoutside)/(double)(NPOINTS*NPOINTS);
 	error = area/(double)NPOINTS;
 
-	printf("Area of Mandlebrot set = %12.8f +/- %12.8f (%d points)\n",area,error,numoutside);
+	// printf("Area of Mandlebrot set = %12.8f +/- %12.8f (%d points)\n",area,error,numoutside);
 
 }
