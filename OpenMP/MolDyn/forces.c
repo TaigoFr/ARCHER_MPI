@@ -54,28 +54,22 @@
           forcex   = xx*r148;
           fxi     += forcex;
           #pragma omp atomic
-          {
-            f[j]    -= forcex;
-          }
+          f[j]    -= forcex;
           forcey   = yy*r148;
           fyi     += forcey;
           #pragma omp atomic
-          {
           f[j+1]  -= forcey;
-          }
           forcez   = zz*r148;
           fzi     += forcez;
           #pragma omp atomic
-          {
           f[j+2]  -= forcez;
-          }
         }
       }
       #pragma omp atomic
-      {
-        f[i]     += fxi;
-        f[i+1]   += fyi;
-        f[i+2]   += fzi;
-      }
+      f[i]     += fxi;
+      #pragma omp atomic
+      f[i+1]   += fyi;
+      #pragma omp atomic
+      f[i+2]   += fzi;
     }
   }
