@@ -18,7 +18,7 @@
     rcoffs = rcoff*rcoff;
 
     #pragma omp parallel for default(none) \
-    shared(x,npart,side,sideh,rcoffs) \
+    shared(x,npart,side,sideh,rcoffs,f) \
     private(i,j,xi,yi,zi,fxi,fyi,fzi,xx,yy,zz,rd,rrd,rrd2,rrd3,rrd4,rrd6,rrd7,r148,forcex,forcey,forcez) \
     reduction(+:vir) reduction(+:epot)
     for (i=0; i<npart*3; i+=3) {
@@ -53,12 +53,15 @@
           vir     -= rd*r148;
           forcex   = xx*r148;
           fxi     += forcex;
+          #pragma omp critical
           f[j]    -= forcex;
           forcey   = yy*r148;
           fyi     += forcey;
+          #pragma omp critical
           f[j+1]  -= forcey;
           forcez   = zz*r148;
           fzi     += forcez;
+          #pragma omp critical
           f[j+2]  -= forcez;
         }
       }
