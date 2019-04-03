@@ -33,7 +33,7 @@ int main(){
 	#pragma omp for collapse(2)
 	for (int i=0; i<NPOINTS; i++){
 		for (int j=0; j<NPOINTS; j++){
-			// numoutside_v[i][j] = 0;
+			numoutside_v[i][j] = 0;
 		}
 	}
 
