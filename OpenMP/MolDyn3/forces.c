@@ -12,6 +12,10 @@
     double rd, rrd, rrd2, rrd3, rrd4, rrd6, rrd7, r148;
     double forcex, forcey, forcez;
 
+    double f_temp[npart*3];
+    for(int iter=0; iter<npart*3; ++iter)
+    	f_temp[iter] = f[iter];
+
     #pragma omp single
     {
       vir    = 0.0;
@@ -55,23 +59,25 @@
           vir     -= rd*r148;
           forcex   = xx*r148;
           fxi     += forcex;
-          #pragma omp atomic
-          f[j]    -= forcex;
+          f_temp[j]    -= forcex;
           forcey   = yy*r148;
           fyi     += forcey;
-          #pragma omp atomic
-          f[j+1]  -= forcey;
+          f_temp[j+1]  -= forcey;
           forcez   = zz*r148;
           fzi     += forcez;
-          #pragma omp atomic
-          f[j+2]  -= forcez;
+          f_temp[j+2]  -= forcez;
         }
       }
-      #pragma omp atomic
-      f[i]     += fxi;
-      #pragma omp atomic
-      f[i+1]   += fyi;
-      #pragma omp atomic
-      f[i+2]   += fzi;
+      f_temp[i]     += fxi;
+      f_temp[i+1]   += fyi;
+      f_temp[i+2]   += fzi;
     }
+
+    for(int iter=0; iter<npart*3; ++iter){
+    	#pragma omp atomic
+    	{
+	    	f[iter] += f_temp[iter];
+    	}
+    }
+
   }
