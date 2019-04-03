@@ -20,7 +20,8 @@
     #pragma omp parallel for default(none) \
     shared(x,npart,side,sideh,rcoffs,f) \
     private(i,j,xi,yi,zi,fxi,fyi,fzi,xx,yy,zz,rd,rrd,rrd2,rrd3,rrd4,rrd6,rrd7,r148,forcex,forcey,forcez) \
-    reduction(+:vir) reduction(+:epot)
+    reduction(+:vir,epot) \
+    schedule(static,10)
     for (i=0; i<npart*3; i+=3) {
       xi  = x[i];
       yi  = x[i+1];
