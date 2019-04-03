@@ -54,19 +54,28 @@
           forcex   = xx*r148;
           fxi     += forcex;
           #pragma omp critical
-          f[j]    -= forcex;
+          {
+            f[j]    -= forcex;
+          }
           forcey   = yy*r148;
           fyi     += forcey;
           #pragma omp critical
+          {
           f[j+1]  -= forcey;
+          }
           forcez   = zz*r148;
           fzi     += forcez;
           #pragma omp critical
+          {
           f[j+2]  -= forcez;
+          }
         }
       }
-      f[i]     += fxi;
-      f[i+1]   += fyi;
-      f[i+2]   += fzi;
+      #pragma omp critical
+      {
+        f[i]     += fxi;
+        f[i+1]   += fyi;
+        f[i+2]   += fzi;
+      }
     }
   }
