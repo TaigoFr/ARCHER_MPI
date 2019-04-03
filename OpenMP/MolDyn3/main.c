@@ -113,7 +113,6 @@ int main(){
 
      start = secnds(); 
 
-
     for (move=1; move<=movemx; move++) {
 
     /*
