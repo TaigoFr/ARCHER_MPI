@@ -27,7 +27,7 @@ int main(){
  */
 
 
-#pragma omp parallel reduction(+:numoutside), private(z,c), shared(numoutside_v), default(none)
+#pragma omp parallel private(z,c), shared(numoutside_v), default(none)
 // #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
 	#pragma omp for collapse(2)
@@ -41,7 +41,7 @@ int main(){
 	#pragma omp master
 	for (int i=0; i<NPOINTS; i++){
 		for (int j=0; j<NPOINTS; j++){
-			#pragma omp task firstprivate(i,j)
+			#pragma omp task firstprivate(i,j) default(none) private(z,c) shared(numoutside_v)
 			{
 				c.real = -2.0+2.5*(double)(i)/(double)(NPOINTS)+1.0e-7;
 				c.imag = 1.125*(double)(j)/(double)(NPOINTS)+1.0e-7;
@@ -58,13 +58,12 @@ int main(){
 			}
 		}
 	}
+}
 
-	#pragma omp taskwait
-	#pragma omp for collapse(2)
-	for (int i=0; i<NPOINTS; i++){
-		for (int j=0; j<NPOINTS; j++){
-			numoutside += numoutside_v[i][j];
-		}
+#pragma omp parallel for collapse(2) reduction(+:numoutside) default(none) shared(numoutside_v)
+for (int i=0; i<NPOINTS; i++){
+	for (int j=0; j<NPOINTS; j++){
+		numoutside += numoutside_v[i][j];
 	}
 }
 

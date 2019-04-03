@@ -25,15 +25,15 @@ int main(){
  */
 
 
-#pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
+#pragma omp parallel reduction(+:numoutside), private(z,c), shared(numoutside_v), default(none)
+// #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
 	printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
 	#pragma omp master
 	for (int i=0; i<NPOINTS; i++){
-		int numoutside_temp = 0;
-		#pragma omp task firstprivate(i) shared(numoutside_temp)
-		{
-			for (int j=0; j<NPOINTS; j++){
+		for (int j=0; j<NPOINTS; j++){
+			#pragma omp task firstprivate(i,j) private(z,c) shared(numoutside) default(none)
+			{
 				c.real = -2.0+2.5*(double)(i)/(double)(NPOINTS)+1.0e-7;
 				c.imag = 1.125*(double)(j)/(double)(NPOINTS)+1.0e-7;
 				z = c;
@@ -42,13 +42,13 @@ int main(){
 					z.imag = z.real*z.imag*2 + c.imag; 
 					z.real = ztemp; 
 					if ((z.real*z.real + z.imag*z.imag)>4.0e0) {
-						++numoutside_temp;
+						#pragma omp atomic
+							++numoutside;
 						break;
 					}
 				}
 			}
 		}
-		numoutside += numoutside_temp;
 	}
 }
 
