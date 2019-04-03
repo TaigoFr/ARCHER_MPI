@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 
       // Apply CA rules to all cells
 
-    #pragma omp parallel default(none) reduction(+:nmove) shared(newroad, oldroad, NCELL)
+    #pragma omp parallel default(none) reduction(+:nmove) shared(newroad, oldroad)
     {
       nmove += updateroad(newroad, oldroad, NCELL);
 
