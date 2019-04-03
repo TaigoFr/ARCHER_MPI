@@ -12,7 +12,7 @@
     double rd, rrd, rrd2, rrd3, rrd4, rrd6, rrd7, r148;
     double forcex, forcey, forcez;
 
-    #pragma omp single
+    #pragma omp master
     {
       vir    = 0.0;
       epot   = 0.0;

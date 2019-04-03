@@ -16,7 +16,7 @@
     for(int iter=0; iter<npart*3; ++iter)
     	f_temp[iter] = f[iter];
 
-    #pragma omp single
+    #pragma omp master
     {
       vir    = 0.0;
       epot   = 0.0;
