@@ -75,9 +75,7 @@
 
     for(int iter=0; iter<npart*3; ++iter){
     	#pragma omp atomic
-    	{
-	    	f[iter] += f_temp[iter];
-    	}
+	   	f[iter] += f_temp[iter];
     }
 
   }
