@@ -3,7 +3,7 @@
 #
 # C compiler and options for Cray
 #
-CC=	g++
+CC=	cc
 LIB=
 
 #
