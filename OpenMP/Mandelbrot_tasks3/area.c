@@ -31,9 +31,9 @@ int main(){
 	printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
 	#pragma omp master
 	for (int i=0; i<NPOINTS; i++){
-		for (int j=0; j<NPOINTS; j++){
-			#pragma omp task firstprivate(i,j) private(z,c) shared(numoutside) default(none)
-			{
+		#pragma omp task firstprivate(i) private(z,c) shared(numoutside) default(none)
+		{
+			for (int j=0; j<NPOINTS; j++){
 				c.real = -2.0+2.5*(double)(i)/(double)(NPOINTS)+1.0e-7;
 				c.imag = 1.125*(double)(j)/(double)(NPOINTS)+1.0e-7;
 				z = c;

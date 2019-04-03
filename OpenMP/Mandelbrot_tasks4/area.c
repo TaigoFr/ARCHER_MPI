@@ -29,7 +29,7 @@ int main(){
 // #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
 	printf("Process %d/%d\n",omp_get_thread_num(),omp_get_num_threads());
-	#pragma omp master
+	#pragma omp for collapse(2) private(z,c)
 	for (int i=0; i<NPOINTS; i++){
 		for (int j=0; j<NPOINTS; j++){
 			#pragma omp task firstprivate(i,j) private(z,c) shared(numoutside) default(none)
