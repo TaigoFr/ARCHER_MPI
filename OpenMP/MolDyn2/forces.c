@@ -22,7 +22,7 @@
 
     #pragma omp for default(none) \
     shared(npart,x,f,side,sideh,rcoffs) \
-    // private(i,j,xi,yi,zi,fxi,fyi,fzi,xx,yy,zz,rd,rrd,rrd2,rrd3,rrd4,rrd6,rrd7,r148,forcex,forcey,forcez) \
+    private(i,j,xi,yi,zi,fxi,fyi,fzi,xx,yy,zz,rd,rrd,rrd2,rrd3,rrd4,rrd6,rrd7,r148,forcex,forcey,forcez) \
     reduction(+:vir,epot)
     for (i=0; i<npart*3; i+=3) {
       xi  = x[i];
