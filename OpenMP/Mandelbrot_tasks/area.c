@@ -27,8 +27,8 @@ int main(){
  */
 
 
-// #pragma omp parallel reduction(+:numoutside), private(z,c), shared(numoutside_v), default(none)
-#pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
+#pragma omp parallel reduction(+:numoutside), private(z,c), shared(numoutside_v), default(none)
+// #pragma omp parallel reduction(+:numoutside), private(z,c), default(none)
 {
 	#pragma omp for collapse(2)
 	for (int i=0; i<NPOINTS; i++){
