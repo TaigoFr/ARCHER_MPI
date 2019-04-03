@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
   printf("Actual density of cars is %f\n\n", (float) ncars / (float) NCELL);
 
-  double time = secndsomp_get_wtime(); 
+  double time = omp_get_wtime(); 
 
   for (iter=1; iter<=maxiter; iter++)
   { 
