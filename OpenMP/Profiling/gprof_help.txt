@@ -1,0 +1,3 @@
+For profilling with g++ (gprof), add compiler option '-pg'
+Then, run the program. It will output a file 'gmon.out'
+Then, run 'gprof myprog' and it will read and interpret the gmon.out file
